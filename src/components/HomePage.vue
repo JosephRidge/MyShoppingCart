@@ -13,13 +13,27 @@
         <!-- {{ item.name }} : -->
         <ul>
             <!-- Event listening achieved !  -->
-          <div v-on:mouseover="changeImageOnHover(index)" :style="{ background: item.color }" id="colorCircle"></div>
+          <div 
+          v-on:mouseover="changeImageOnHover(index)" 
+          v-on:click="setCurrentItem(index)"
+          :style="{ background: item.color }" id="colorCircle"></div>
         </ul>
       </ul>
       <!-- Colors -->
       <!-- Purchase Section -->
       <h2>Info Section</h2>
-      <button>Add To Cart</button>
+      <h3>Selected Item : <span>{{ selectedItem.name }}</span></h3>
+      <!-- 
+          Button Features:
+           Onclick :
+            Add Item count
+            Reduce the existing quantity form the items 
+            if the items reaches 0 we deactivate the add to card button
+           
+       -->
+       <button v-on:click="resetAll" id="resetButton">reset</button>
+
+      <button v-on:click="addToCart">Add To Cart</button>
     </div>
   </div>
 </template>
@@ -48,17 +62,47 @@ export default {
           currentStockAvailable: 10,
         },
       ],
+      quantity:0,
+      selectedItem:{
+          index:-1, // if value is negative that means it has not changed
+          name:""
+   },
+      itemsPurchased:[]
+
     };
   },
  
   methods: {
     //   Function is triggered on hover 
      changeImageOnHover(index){
-         console.log("index", index)
+         if(this.selectedItem.index === -1){
          this.image = this.items[index].image
-         return this.items[index].image
-
-    }
+         this.selectedItem.name = ""
+         }
+         else{
+              this.image = this.items[this.selectedItem.index].image
+         }
+         return this.items[selectedItem.index].image
+    },
+    
+    addToCart(){ 
+        //     Add Item count
+        this.quantity +=1
+     
+        //     Reduce the existing quantity form the items 
+        //     if the items reaches 0 we deactivate the add to card button
+           
+    },
+    // SEt the currently selected item
+    setCurrentItem(index){
+        this.selectedItem.index = index
+         this.image = this.items[index].image
+         this.selectedItem.name = this.items[index].name
+    },
+    resetAll(){
+        this.selectedItem.name=""
+        this.selectedItem.index = -1
+   }, 
   },
 };
 </script>
@@ -86,5 +130,13 @@ button {
   border-radius: 30px;
   cursor: pointer;
   
+}
+#resetButton{
+    width:auto;
+    margin:10px;
+    background: #e90000;
+    color: aliceblue;
+    font-size: 16px;  
+    font-weight:bold
 }
 </style>
