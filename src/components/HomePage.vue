@@ -1,16 +1,13 @@
 <template>
   <!-- Setting the Base Tag -->
   <div id="myshop">
-    <!-- Image -->
+    <!-- Current Dynamic Image -->
     <img :src="image" alt="Image of Nike T-shirt" />
 
-    <!-- info section -->
-    <!--  Within this info -->
+    <!-- info section --> 
     <div id="infoSection">
       <!-- Current Tshirt Colors -->
-
       <ul v-for="(item, index) in items" :key="item.id">
-        <!-- {{ item.name }} : -->
         <ul>
             <!-- Event listening achieved !  -->
           <div 
@@ -18,28 +15,28 @@
           v-on:click="setCurrentItem(index)"
           :style="{ background: item.color }" id="colorCircle"></div>
         </ul>
-      </ul>
-      <!-- Colors -->
+      </ul> 
       <!-- Purchase Section -->
       <h2>Info Section</h2>
       <h3>Selected Item : <span>{{ selectedItem.name }}</span></h3>
       <!-- 
-          Button Features:
-           Onclick :
-            Add Item count
-            Reduce the existing quantity form the items 
-            if the items reaches 0 we deactivate the add to card button
-           
+          Button Features Onclick :
+            - Add Item count
+            - Reduce the existing quantity form the items 
+            - if the items reaches 0 we deactivate the add to card button
        -->
        <button v-on:click="resetAll" id="resetButton">reset</button>
 
-      <button v-on:click="addToCart">Add To Cart</button>
+      <button v-on:click="addToCart" v-if="itemAvailable">Add To Cart</button>
     </div>
   </div>
 </template>
 
 <script>
+
+// default is our object it contains options-> an example of an aoptions is data, methods, props, mounted 
 export default {
+    // Data Option
   data() {
     return {
       image: "src/assets/red_nike_tshirt.png",
@@ -67,11 +64,13 @@ export default {
           index:-1, // if value is negative that means it has not changed
           name:""
    },
-      itemsPurchased:[]
+
+      itemsPurchased:[],
+      itemAvailable:true
 
     };
   },
- 
+//  Methods Options -> hosts our functions
   methods: {
     //   Function is triggered on hover 
      changeImageOnHover(index){
@@ -82,15 +81,22 @@ export default {
          else{
               this.image = this.items[this.selectedItem.index].image
          }
-         return this.items[selectedItem.index].image
+        //  return this.items[this.selectedItem.index].image
     },
     
     addToCart(){ 
-        //     Add Item count
-        this.quantity +=1
-     
-        //     Reduce the existing quantity form the items 
+        //   Reduce the existing quantity form the items 
+        if(this.items[this.selectedItem.index].currentStockAvailable >0){
+        this.items[this.selectedItem.index].currentStockAvailable -=1
+        //    Add Item count
+        this.quantity +=1     
+        }
+        else{
+            // Hide deactivate the button
         //     if the items reaches 0 we deactivate the add to card button
+         this.itemAvailable = !this.itemAvailable
+        }
+
            
     },
     // SEt the currently selected item
