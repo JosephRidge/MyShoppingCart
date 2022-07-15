@@ -26,9 +26,18 @@
             - if the items reaches 0 we deactivate the add to card button
        -->
        <button v-on:click="resetAll" id="resetButton">reset</button>
-
-      <button v-on:click="addToCart" v-if="itemAvailable">Add To Cart</button>
+      <button v-on:click="addToCart"  :disabled="itemAvailable === false">Add To Cart</button>
     </div>
+
+<!-- Shows the Cart icon togetehr with the Item count -->
+    <div id="priceSection"> 
+      <!-- img of cart-->
+      <img :src="shoppingCart" alt="" srcset="" id="shopping_cart">
+      <!-- count -->
+      <div class="countElement"> {{ quantity }} </div>
+
+    </div>
+
   </div>
 </template>
 
@@ -39,7 +48,9 @@ export default {
     // Data Option
   data() {
     return {
+      deactivateButton:true,
       image: "src/assets/red_nike_tshirt.png",
+      shoppingCart:"src/assets/shopping_cart.svg",
       //     We have our items array here so what we are going to do it loop through them and display
       items: [
         {
@@ -63,8 +74,7 @@ export default {
       selectedItem:{
           index:-1, // if value is negative that means it has not changed
           name:""
-   },
-
+      },
       itemsPurchased:[],
       itemAvailable:true
 
@@ -85,29 +95,54 @@ export default {
     },
     
     addToCart(){ 
-        //   Reduce the existing quantity form the items 
-        if(this.items[this.selectedItem.index].currentStockAvailable >0){
+      console.log(" add to cart has been clicked ")
+
+      // Get the name of the selected item : 
+      let nameOfItem = this.items[this.selectedItem.index].name
+      
+      // get the current item quantity 
+      let quantityOfItem = 0
+
+        //   Reduce the existing quantity form the items  - is the items in stock 
+        if(this.items[this.selectedItem.index].currentStockAvailable > 0){
         this.items[this.selectedItem.index].currentStockAvailable -=1
         //    Add Item count
         this.quantity +=1     
         }
         else{
-            // Hide deactivate the button
+        // Hide deactivate the button
         //     if the items reaches 0 we deactivate the add to card button
          this.itemAvailable = !this.itemAvailable
         }
+          let itemPurchaseObject = {
+          'name':nameOfItem,
+          'numberOfItem':this.quantity
+        }
 
+        // Add the item purchase to the itemsPurchased array
+       this.itemsPurchased.push(itemPurchaseObject)
+        console.log("Product => ",itemPurchaseObject)
            
     },
-    // SEt the currently selected item
+    // Set the currently selected item
     setCurrentItem(index){
-        this.selectedItem.index = index
+      this.itemAvailable = true
+              this.quantity = 0
+         this.selectedItem.index = index
          this.image = this.items[index].image
          this.selectedItem.name = this.items[index].name
     },
+
     resetAll(){
+      this.quantity = 0
         this.selectedItem.name=""
         this.selectedItem.index = -1
+        if(this.itemsPurchased.length > 0 ){
+          for(let i = 0;i < this.itemsPurchased.length;i++ ){
+            this.itemsPurchased[i].name = ""
+            this.itemsPurchased[i].numberOfItem =""
+          }
+        }
    }, 
   },
 };
@@ -116,6 +151,28 @@ export default {
 <style>
 #myshop {
   display: flex;
+}
+/* .shopping_cart{
+
+} */
+.countElement{
+  font-size:40px; 
+  margin:auto;
+
+}
+#priceSection{
+  display:flex;
+  height:min-content; 
+
+}
+#shopping_cart{
+    width:40px;
+    height: 40px;
+    margin-left: 20px;
+    margin-right: 20px;
+    padding:10px;
+    background: #e2ce8c;
+    border-radius: 30px;
 }
 img {
   height: 200px;
