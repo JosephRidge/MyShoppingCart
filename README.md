@@ -34,7 +34,7 @@ Allows  realtime uypdate / render upon change
 ## Functionality : 
 ->  Display Two items for sale ( DONE )
 ->  Add feature to " Add to Cart " ( DONE )  --> Add OnHover function
-->  Calculate the total price : "Total price " 
+->  Calculate the total price : "Total price "  ( DONE ) 
 ->  Add more items to cart ( increment the item quantity plus one)
 -> Events ( mousehover and onclick)
 
